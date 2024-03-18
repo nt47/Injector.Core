@@ -137,6 +137,7 @@ namespace Injector64 {
 		Msg(L"Thread created at: %p, waiting for return...\n", pShellcode);
 
 		HINSTANCE hCheck = NULL;
+		int n = 0;
 		while (!hCheck) {
 			DWORD exitcode = 0;
 			GetExitCodeProcess(hProc, &exitcode);
@@ -159,8 +160,13 @@ namespace Injector64 {
 			else if (hCheck == (HINSTANCE)0x505050) {
 				Msg(L"WARNING: Exception support failed!\n");
 			}
-
+			if (n == 100)
+			{
+				Msg(L"Waiting for return time out\n");
+				return false;
+			}
 			Sleep(10);
+			n++;
 		}
 
 		BYTE* emptyBuffer = (BYTE*)malloc(1024 * 1024 * 20);
