@@ -276,7 +276,7 @@ namespace Injector32 {
 				Msg(L"WARNING: Exception support failed!\n");
 			}
 
-			if (n == 100)
+			if (n == 100)//等待超时就返回
 			{
 				Msg(L"Waiting for return time out\n");
 				return false;
