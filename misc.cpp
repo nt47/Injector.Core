@@ -5,7 +5,7 @@
 // 全局变量，用于线程之间共享
 HANDLE g_hEvent=NULL;
 
-bool ShareMemory()
+bool ShareMemory(LPVOID pParam)
 {
     // 创建共享内存
     HANDLE hMapFile = CreateFileMapping(
@@ -38,13 +38,26 @@ bool ShareMemory()
     }
 
     // 在共享内存中写入数据
-    TCHAR tzPath[MAX_PATH];
-    GetModuleFileName(GetModuleHandle(NULL), tzPath, MAX_PATH); //获取本目录下的
-    PathRemoveFileSpec(tzPath);
+    TCHAR tzSrcPath[MAX_PATH];
+    GetModuleFileName(GetModuleHandle(NULL), tzSrcPath, MAX_PATH); //获取本目录下的
+    PathRemoveFileSpec(tzSrcPath);
 
-    GetCurrentDirectory(sizeof(shared_data->exe_folder), shared_data->exe_folder);
-    wcscpy_s(shared_data->dll_folder, sizeof(shared_data->dll_folder), tzPath);
+    GetCurrentDirectory(sizeof(shared_data->src_exe_folder), shared_data->src_exe_folder);
+    wcscpy_s(shared_data->src_dll_folder, sizeof(shared_data->src_dll_folder), tzSrcPath);
 
+
+    TCHAR tzTargetFolder[MAX_PATH];
+    TCHAR tzTargetName[MAX_PATH];
+
+    wcscpy_s(tzTargetName, sizeof(tzTargetName), (wchar_t*)pParam);//只保留文件名
+    PathStripPath(tzTargetName);
+
+    wcscpy_s(tzTargetFolder, sizeof(tzTargetFolder), (wchar_t*)pParam);//只保留目录
+    PathRemoveFileSpec(tzTargetFolder);
+
+
+    wcscpy_s(shared_data->target_exe_folder, sizeof(shared_data->target_exe_folder), tzTargetFolder);
+    wcscpy_s(shared_data->target_exe_name, sizeof(shared_data->target_exe_name), tzTargetName);
 
     // 发送进程事件信号
     SetEvent(g_hEvent);

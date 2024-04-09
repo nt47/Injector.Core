@@ -366,7 +366,7 @@ API DLLEXPORT BOOL Inject(int PID, const wchar_t* dllPath)
 	}
 
 
-	CloseHandle(CreateThread(NULL,NULL,(LPTHREAD_START_ROUTINE)ShareMemory,NULL,NULL,NULL));
+	CloseHandle(CreateThread(NULL,NULL,(LPTHREAD_START_ROUTINE)ShareMemory, (LPVOID)GetProcessPath(PID).c_str(), NULL, NULL));
 
 	// 等待进程事件信号
 	WaitForSingleObject(g_hEvent, INFINITE);
